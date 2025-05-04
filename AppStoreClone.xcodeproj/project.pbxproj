@@ -11,7 +11,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		5F918A852DC725EF00E20791 /* AppStoreClone */ = {
+		5F918A9F2DC7276F00E20791 /* AppStoreClone */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = AppStoreClone;
 			sourceTree = "<group>";
@@ -32,8 +32,8 @@
 		5F918A7A2DC725EF00E20791 = {
 			isa = PBXGroup;
 			children = (
-				5F918A852DC725EF00E20791 /* AppStoreClone */,
 				5F918A842DC725EF00E20791 /* Products */,
+				5F918A9F2DC7276F00E20791 /* AppStoreClone */,
 			);
 			sourceTree = "<group>";
 		};
@@ -61,7 +61,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				5F918A852DC725EF00E20791 /* AppStoreClone */,
+				5F918A9F2DC7276F00E20791 /* AppStoreClone */,
 			);
 			name = AppStoreClone;
 			packageProductDependencies = (
