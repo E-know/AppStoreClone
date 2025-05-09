@@ -8,34 +8,30 @@
 import SwiftUI
 
 struct SearchView: View {
-    
+    @State var textTerm: String = ""
+    @State var presentSearchable = false
     var body: some View {
         NavigationStack {
-            VStack {
-                CustomNavigationBar()
-                    .padding()
-                
-                ScrollView {
-                    VStack {
-                        Text("Hello World")
+            ScrollView {
+                VStack(spacing: 48) {
+                    ForEach(0..<10, id: \.self) { num in
+                        NavigationLink(value: num) {
+                            AppInfoCellView()
+                        }
                     }
                 }
+                .padding(.horizontal, 20)
+            }
+            .navigationTitle("검색")
+            .toolbarTitleDisplayMode(.inlineLarge)
+            .searchable(text: $textTerm,isPresented: $presentSearchable ,placement: .navigationBarDrawer(displayMode: .always), prompt: "게임, 앱, 스토리 등..")
+            .onSubmit(of: .search) {
+                print("Submit")
+            }
+            .navigationDestination(for: Int.self) { _ in
+                AppInfoDetailView()
             }
         }
-    }
-    
-    private func CustomNavigationBar() -> some View {
-        HStack {
-            Text("검색")
-                .font(.system(size: 34, weight: .black))
-            Spacer()
-            Button(action: {
-                print("Tapped")
-            }) {
-                Image(systemName: "gear")
-            }
-        }
-        .frame(maxWidth: .infinity)
     }
 }
 

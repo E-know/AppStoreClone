@@ -9,12 +9,12 @@ import SwiftUI
 
 struct AppInfoCellView: View {
     var body: some View {
-        VStack {
+        VStack(spacing: 14) {
             AppInfoView()
             
-            Spacer().frame(height: 14)
-            
             AppSubInfoView()
+            
+            AppScreenShotView()
         }
     }
     
@@ -31,6 +31,7 @@ struct AppInfoCellView: View {
             
             VStack(alignment: .leading, spacing: 6) {
                 Text("카카오뱅크")
+                    .foregroundStyle(Color.black)
                     .font(.system(size: 12, weight: .semibold))
                 
                 Text("금융을 바꾸다 생활을 바꾸다")
@@ -40,46 +41,48 @@ struct AppInfoCellView: View {
             
             Spacer()
             
-            Image(systemName: "arrow.down.circle")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(height: 30)
-                .foregroundStyle(Color.downloadIcon)
+            Button(action: {
+                print("Download")
+            }) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 16)
+                        .frame(width: 75, height: 32)
+                        .foregroundStyle(Color.downloadBG)
+                    
+                    Text("받기")
+                        .font(.system(size: 12, weight: .bold))
+                        .foregroundStyle(Color.download)
+                }
+            }
         }
     }
     
+    
     // MARK: AppSubInfoView
     private func AppSubInfoView() -> some View {
-        ZStack {
+        HStack {
             /// 왼쪽 셀
-            HStack {
-                RatingStarView()
-                Spacer().frame(width: 2)
-                Text("1.3 만")
-                    .font(.system(size: 11, weight: .semibold))
+            RatingStarView()
+            Spacer().frame(width: 2)
+            Text("1.3 만")
+                .font(.system(size: 11, weight: .semibold))
                 
-                Spacer()
-            }
+            Spacer()
             
             /// 가운데 셀
-            HStack {
-                Spacer()
+            Image(systemName: "person.crop.square")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 10, height: 10)
+            Spacer().frame(width: 5)
+            Text("KakaoBank Corp.")
+                .font(.system(size: 11, weight: .semibold))
                 
-                Image(systemName: "person.crop.square")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 10, height: 10)
-                Spacer().frame(width: 5)
-                Text("KakaoBank Corp.")
-                    .font(.system(size: 11, weight: .semibold))
-                
-                Spacer()
-            }
+            Spacer()
+            
             /// 오른쪽 셀
-            HStack {
-                Spacer()
-                RankView()
-            }
+            RankView()
+            
         }
         .foregroundStyle(Color.subGray)
     }
@@ -121,7 +124,14 @@ struct AppInfoCellView: View {
     
     // MARK: AppScreenShotView
     private func AppScreenShotView() -> some View {
-       Text("공사중")
+        HStack {
+            ForEach(0..<3, id: \.self) {
+                Image("kakaoBankScreenShot\($0)")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+            }
+        }
     }
 }
 
