@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		5F9320142DCFBCF6005FF989 /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = 5F9320132DCFBCF6005FF989 /* Moya */; };
+		5F9320222DD055D8005FF989 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 5F9320212DD055D8005FF989 /* Kingfisher */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		5F918A832DC725EF00E20791 /* AppStoreClone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppStoreClone.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +28,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5F9320222DD055D8005FF989 /* Kingfisher in Frameworks */,
+				5F9320142DCFBCF6005FF989 /* Moya in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +72,8 @@
 			);
 			name = AppStoreClone;
 			packageProductDependencies = (
+				5F9320132DCFBCF6005FF989 /* Moya */,
+				5F9320212DD055D8005FF989 /* Kingfisher */,
 			);
 			productName = AppStoreClone;
 			productReference = 5F918A832DC725EF00E20791 /* AppStoreClone.app */;
@@ -94,6 +103,10 @@
 			);
 			mainGroup = 5F918A7A2DC725EF00E20791;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				5F9320122DCFBCF6005FF989 /* XCRemoteSwiftPackageReference "Moya" */,
+				5F9320202DD055D8005FF989 /* XCRemoteSwiftPackageReference "Kingfisher" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 5F918A842DC725EF00E20791 /* Products */;
 			projectDirPath = "";
@@ -326,6 +339,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		5F9320122DCFBCF6005FF989 /* XCRemoteSwiftPackageReference "Moya" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Moya/Moya";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 15.0.3;
+			};
+		};
+		5F9320202DD055D8005FF989 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.3.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		5F9320132DCFBCF6005FF989 /* Moya */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5F9320122DCFBCF6005FF989 /* XCRemoteSwiftPackageReference "Moya" */;
+			productName = Moya;
+		};
+		5F9320212DD055D8005FF989 /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5F9320202DD055D8005FF989 /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 5F918A7B2DC725EF00E20791 /* Project object */;
 }

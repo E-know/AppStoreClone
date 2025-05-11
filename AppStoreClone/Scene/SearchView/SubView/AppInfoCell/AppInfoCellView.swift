@@ -5,9 +5,16 @@
 //  Created by Inho Choi on 5/4/25.
 //
 
+import Kingfisher
 import SwiftUI
 
 struct AppInfoCellView: View {
+    private let appInfo: AppStoreSearchResultViewModel
+    
+    init(appInfo: AppStoreSearchResultViewModel) {
+        self.appInfo = appInfo
+    }
+    
     var body: some View {
         VStack(spacing: 14) {
             AppInfoView()
@@ -20,21 +27,27 @@ struct AppInfoCellView: View {
     
     // MARK: AppInfoView
     private func AppInfoView() -> some View {
-        HStack {
-            Image("kakaoBank")
+        HStack(spacing: 0) {
+            KFImage(URL(string: appInfo.appIcon100))
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 60, height: 60)
                 .clipShape(RoundedRectangle(cornerRadius: 8))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(Color.subGrayLight, lineWidth: 0.5)
+                )
+                .padding(.trailing, 10)
             
-            Spacer().frame(width: 10)
             
             VStack(alignment: .leading, spacing: 6) {
-                Text("카카오뱅크")
+                Text(appInfo.appName)
+                    .lineLimit(1)
+                    .truncationMode(.tail)
                     .foregroundStyle(Color.black)
-                    .font(.system(size: 12, weight: .semibold))
+                    .font(.system(size: 13, weight: .semibold))
                 
-                Text("금융을 바꾸다 생활을 바꾸다")
+                Text("")
                     .font(.system(size: 11))
                     .foregroundStyle(Color.subGray)
             }
@@ -42,7 +55,7 @@ struct AppInfoCellView: View {
             Spacer()
             
             Button(action: {
-                print("Download")
+                print("받기")
             }) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 16)
@@ -60,11 +73,12 @@ struct AppInfoCellView: View {
     
     // MARK: AppSubInfoView
     private func AppSubInfoView() -> some View {
-        HStack {
+        HStack(spacing: 0) {
             /// 왼쪽 셀
             RatingStarView()
-            Spacer().frame(width: 2)
-            Text("1.3 만")
+                .padding(.trailing, 2)
+            
+            Text(appInfo.userRatingCountString)
                 .font(.system(size: 11, weight: .semibold))
                 
             Spacer()
@@ -75,7 +89,7 @@ struct AppInfoCellView: View {
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 10, height: 10)
             Spacer().frame(width: 5)
-            Text("KakaoBank Corp.")
+            Text(appInfo.developerName)
                 .font(.system(size: 11, weight: .semibold))
                 
             Spacer()
@@ -116,7 +130,7 @@ struct AppInfoCellView: View {
             
             Spacer().frame(width: 2)
             
-            Text("금융")
+            Text(appInfo.genres[0])
                 .font(.system(size: 11, weight: .semibold))
         }
     }
@@ -125,8 +139,8 @@ struct AppInfoCellView: View {
     // MARK: AppScreenShotView
     private func AppScreenShotView() -> some View {
         HStack {
-            ForEach(0..<3, id: \.self) {
-                Image("kakaoBankScreenShot\($0)")
+            ForEach(appInfo.screenshotUrls.prefix(3), id: \.self) { urlString in
+                KFImage(URL(string: urlString))
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .clipShape(RoundedRectangle(cornerRadius: 10))
@@ -135,6 +149,6 @@ struct AppInfoCellView: View {
     }
 }
 
-#Preview {
-    AppInfoCellView()
-}
+//#Preview {
+//    AppInfoCellView(appInfo: <#AppStoreSearchResultViewModel#>)
+//}
