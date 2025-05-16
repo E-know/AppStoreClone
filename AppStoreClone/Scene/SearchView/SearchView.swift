@@ -5,12 +5,13 @@
 //  Created by Inho Choi on 5/4/25.
 //
 
+import Kingfisher
 import Combine
 import SwiftUI
 
 struct SearchView: View {
     @State var state: SearchModelStateProtocol
-    private var intent: SearchIntentProtocol
+    private let intent: SearchIntentProtocol
     
     init() {
         let state = SearchState()
@@ -20,61 +21,57 @@ struct SearchView: View {
 
     
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                LazyVGrid(columns: [.init()], spacing: 0) {
-                    ForEach(state.appInfo) { info in
-                        NavigationLink(value: info) {
-                            AppInfoCellView(appInfo: info)
-                                .padding(.vertical, 24)
+        NavigationStack(path: bindingState(key: \.navigationPath, setter: intent.setNavigationPath)) {
+            ScrollViewReader { proxy in
+                ScrollView {
+                    LazyVGrid(columns: [.init()], spacing: 0) {
+                        Color.clear
+                            .frame(height: 0)
+                            .id("top")
+
+                        ForEach(state.appInfo) { info in
+                            Button(action: {
+                                intent.appendNavigationPath(info.appId)
+                            }) {
+                                AppInfoCellView(appInfo: info)
+                                    .padding(.vertical, 24)
+                            }
+                            
                         }
                     }
+                    .padding(.horizontal, 20)
                 }
-                .padding(.horizontal, 20)
-            }
-            .navigationTitle("검색")
-            .toolbarTitleDisplayMode(.inlineLarge)
-            .searchable(text: bindingTerm(), isPresented: bindingSearchable(), placement: .navigationBarDrawer(displayMode: .always), prompt: "게임, 앱, 스토리 등")
-            .onSubmit(of: .search) {
-                intent.searchApp(state.textTerm)
-            }
-            .navigationDestination(for: AppStoreSearchResultViewModel.self) { _ in
-                AppInfoDetailView()
+                .navigationTitle("검색")
+                .toolbarTitleDisplayMode(.inlineLarge)
+                .searchable(
+                    text: bindingState(key: \.textTerm, setter: intent.setSearchBarTerm),
+                    isPresented: bindingState(key: \.searchable, setter: intent.setSearchable),
+                    placement: .navigationBarDrawer(displayMode: .always),
+                    prompt: "게임, 앱, 스토리 등"
+                )
+                .onSubmit(of: .search) {
+                    intent.searchApp(state.textTerm)
+                }
+                .onChange(of: state.goScrollTop) {
+                    withAnimation {
+                        proxy.scrollTo("top", anchor: .top)
+                    }
+                }
+                .navigationDestination(for: SearchNavigationPath.self) { path in
+                    if case let .appDetail(data) = path {
+                        AppInfoDetailView(appInfo: data)
+                    } else {
+                        Text("Error")
+                    }
+                }
             }
         }
     }
     
-    // FIXME: 뭔가 binding 함수들은 generic으로 묶을 수 있을것 같은데 못 묶겠다..
-//    private func binding<T>(for keypath: KeyPath<SearchModelStateProtocol, T>) -> Binding<T> {
-//        Binding(
-//            get: {
-//                state[keyPath: keypath]
-//            },
-//            set: { newValue in
-//                intent.setSearchBarTerm(newValue)
-//            }
-//        )
-//    }
-    
-    private func bindingTerm() -> Binding<String> {
-        Binding(
-            get: {
-                state.textTerm
-            },
-            set: { newValue in
-                intent.setSearchBarTerm(newValue)
-            }
-        )
-    }
-    
-    private func bindingSearchable() -> Binding<Bool> {
-        Binding(
-            get: {
-                state.searchable
-            },
-            set: { newValue in
-                intent.setSearchable(newValue)
-            })
+    private func bindingState<T>(key: KeyPath<SearchModelStateProtocol, T>, setter: @escaping (T) -> Void) -> Binding<T> {
+        Binding(get: {
+            state[keyPath: key]
+        }, set: setter)
     }
 }
 

@@ -10,9 +10,12 @@ protocol SearchIntentProtocol {
     func setSearchable(_ value: Bool)
     
     func searchApp(_ term: String)
+    func setNavigationPath(_ path: [SearchNavigationPath])
+    func appendNavigationPath(_ appID: Int)
 }
 
 final class SearchIntent: SearchIntentProtocol {
+    
     private weak var state: SearchModelActionsProtocol?
     private var appSearchResult: AppStoreSearchDomain?
     
@@ -39,4 +42,23 @@ final class SearchIntent: SearchIntentProtocol {
             state?.presentSearchApp(appInfo: domainData.results)
         }
     }
+    
+    func setNavigationPath(_ path: [SearchNavigationPath]) {
+        Task {
+            state?.presentNavigationPath(path)
+        }
+    }
+    
+    
+    func appendNavigationPath(_ appID: Int) {
+        guard let domain = appSearchResult?.results.filter({ $0.appId == appID }).first else { return }
+        let path = SearchNavigationPath.appDetail(data: domain)
+        Task {
+            state?.presentNavigationPath(path)
+        }
+    }
+}
+
+enum SearchNavigationPath: Hashable {
+    case appDetail(data: AppStoreSearchResultDomain)
 }

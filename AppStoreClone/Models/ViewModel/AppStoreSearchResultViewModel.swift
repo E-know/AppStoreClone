@@ -5,6 +5,8 @@
 //  Created by Inho Choi on 5/11/25.
 //
 
+import Foundation
+
 struct AppStoreSearchResultViewModel: Identifiable, Hashable {
     var id: Int {
         self.appId
@@ -15,12 +17,12 @@ struct AppStoreSearchResultViewModel: Identifiable, Hashable {
     }
     
     // 앱의 스크린샷 URL 목록
-    let screenshotUrls: [String]
+    let screenshotUrls: [URL?]
     
     // 앱 아이콘 (100x100)
-    let appIcon100: String
+    let appIcon100: URL?
     // 앱 아이콘 (512x512)
-    let appIcon512: String
+    let appIcon512: URL?
 
     // 평균 사용자 평점
     let averageUserRating: Double
@@ -71,4 +73,8 @@ struct AppStoreSearchResultViewModel: Identifiable, Hashable {
 
     // 게임 센터 지원 여부
     let isGameCenterEnabled: Bool
+    
+    var isDownloaded: Bool = false
+    
+    let appStoreURL: URL?
 }

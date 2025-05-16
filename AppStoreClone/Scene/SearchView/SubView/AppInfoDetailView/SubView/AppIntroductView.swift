@@ -8,41 +8,49 @@
 import SwiftUI
 
 struct AppIntroductView: View {
+    @State var descriptionMultiLineCount: Int? = 3
+    
     private let textFontSize: CGFloat = 12
+    private let description: String
+    private let developerName: String
+    
+    init(description: String, developerName: String) {
+        self.description = description
+        self.developerName = developerName
+    }
     
     var body: some View {
         VStack {
             HStack {
                 VStack {
-                    Text("""
-                    대한민국에서 가장 빠른 길 안내하는 카카오맵!
-                    가장 빠른 길찾기는 물론 맛집, 주변추천 등
-                    당신이 기대하는 길찾기의 모든것을 만나보세요!
-                    """)
-                    .font(textFontSize)
-                    .lineSpacing(textFontSize * 0.7)
+                    Text(description)
+                        .font(textFontSize)
+                        .lineSpacing(textFontSize * 0.7)
+                        .lineLimit(descriptionMultiLineCount)
                 }
                 
                 Spacer()
                 
-                VStack {
-                    Spacer()
-                    
-                    Button(action: {
-                        print("더보기")
-                    }) {
-                        Text("더 보기")
-                            .font(textFontSize)
+                if descriptionMultiLineCount != nil {
+                    VStack {
+                        Spacer()
+                        
+                        Button(action: {
+                            descriptionMultiLineCount = nil
+                        }) {
+                            Text("더 보기")
+                                .font(textFontSize)
+                        }
                     }
                 }
             }
             
             Button(action: {
-                print("KakaoBank Corp.")
+                print(developerName)
             }) {
                 HStack {
                     VStack(alignment: .leading) {
-                        Text("KakaoBank Corp.")
+                        Text(developerName)
                             .font(textFontSize)
                             .padding(.bottom, 2)
                         
@@ -65,6 +73,6 @@ struct AppIntroductView: View {
     }
 }
 
-#Preview {
-    AppIntroductView()
-}
+//#Preview {
+//    AppIntroductView()
+//}

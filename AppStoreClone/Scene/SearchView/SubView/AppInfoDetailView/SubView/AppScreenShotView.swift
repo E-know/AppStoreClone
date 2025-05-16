@@ -5,12 +5,17 @@
 //  Created by Inho Choi on 5/10/25.
 //
 
-
+import Kingfisher
 import SwiftUI
 
 struct AppScreenShotView: View {
     @State var imageWidth: CGFloat = 300
     let horizontalPadding: CGFloat = 21
+    let imageUrls: [URL?]
+    
+    init(imageUrls: [URL?]) {
+        self.imageUrls = imageUrls
+    }
     
     var body: some View {
         VStack(spacing: 12) {
@@ -22,9 +27,9 @@ struct AppScreenShotView: View {
             .padding(.horizontal, 21)
             
             ScrollView(.horizontal) {
-                HStack {
-                    ForEach(0..<4) {
-                        Image("kakaoBankScreenShot\($0)")
+                LazyHGrid(rows: [.init()]) {
+                    ForEach(imageUrls, id: \.self) { url in
+                        KFImage(url)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: imageWidth)

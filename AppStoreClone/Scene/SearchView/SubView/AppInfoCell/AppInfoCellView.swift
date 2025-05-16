@@ -28,7 +28,7 @@ struct AppInfoCellView: View {
     // MARK: AppInfoView
     private func AppInfoView() -> some View {
         HStack(spacing: 0) {
-            KFImage(URL(string: appInfo.appIcon100))
+            KFImage(appInfo.appIcon100)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 60, height: 60)
@@ -139,8 +139,8 @@ struct AppInfoCellView: View {
     // MARK: AppScreenShotView
     private func AppScreenShotView() -> some View {
         HStack {
-            ForEach(appInfo.screenshotUrls.prefix(3), id: \.self) { urlString in
-                KFImage(URL(string: urlString))
+            ForEach(appInfo.screenshotUrls.prefix(3), id: \.self) { url in
+                KFImage(url)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .clipShape(RoundedRectangle(cornerRadius: 10))
