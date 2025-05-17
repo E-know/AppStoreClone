@@ -9,8 +9,8 @@ import Kingfisher
 import SwiftUI
 
 struct AppScreenShotView: View {
-    @State var imageWidth: CGFloat = 300
-    let horizontalPadding: CGFloat = 21
+    private let screenshotSpacing: CGFloat = 10
+    private let horizontalPadding: CGFloat = 21
     let imageUrls: [URL?]
     
     init(imageUrls: [URL?]) {
@@ -27,12 +27,14 @@ struct AppScreenShotView: View {
             .padding(.horizontal, 21)
             
             ScrollView(.horizontal) {
-                LazyHGrid(rows: [.init()]) {
+                LazyHGrid(rows: [.init()], spacing: screenshotSpacing) {
                     ForEach(imageUrls, id: \.self) { url in
                         KFImage(url)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(width: imageWidth)
+                            .containerRelativeFrame(.horizontal) { length, _ in
+                                return (length - horizontalPadding * 2 - screenshotSpacing) * 2 / 3
+                            }
                             .clipShape(RoundedRectangle(cornerRadius: 23))
                     }
                 }
@@ -41,16 +43,6 @@ struct AppScreenShotView: View {
             }
             .scrollIndicators(.never)
             .scrollTargetBehavior(.viewAligned)
-            .overlay {
-                GeometryReader() { geometry -> Color in
-                    let totalWidth = geometry.size.width
-                    let availableWidth = totalWidth - (self.horizontalPadding * 2)
-                    Task { @MainActor in
-                        self.imageWidth = availableWidth * (2 / 3)
-                    }
-                    return Color.clear
-                }
-            }
         }
     }
 }

@@ -5,13 +5,13 @@
 //  Created by Inho Choi on 5/11/25.
 //
 
-protocol SearchIntentProtocol {
-    func setSearchBarTerm(_ term: String)
-    func setSearchable(_ value: Bool)
+protocol SearchModelActionsProtocol: AnyObject {
+    func presentSearchBarTerm(text: String?)
+    func presentSearchable(_ value: Bool)
     
-    func searchApp(_ term: String)
-    func setNavigationPath(_ path: [SearchNavigationPath])
-    func appendNavigationPath(_ appID: Int)
+    func presentSearchApp(appInfo: [AppStoreSearchResultDomain])
+    func presentNavigationPath(_ path: [SearchNavigationPath])
+    func presentNavigationPath(_ path: SearchNavigationPath)
 }
 
 final class SearchIntent: SearchIntentProtocol {
