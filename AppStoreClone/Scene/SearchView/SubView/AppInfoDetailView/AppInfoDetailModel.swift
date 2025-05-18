@@ -57,4 +57,14 @@ enum AppInfoDetailModel {
     enum TapDeveloperButton {
         struct Request {}
     }
+    
+    enum FullScreenshot {
+        struct Request {
+            let index: Int
+        }
+        
+        struct Response {
+            let index: Int
+        }
+    }
 }

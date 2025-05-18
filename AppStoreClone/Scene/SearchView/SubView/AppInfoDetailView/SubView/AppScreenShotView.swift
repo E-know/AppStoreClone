@@ -12,9 +12,11 @@ struct AppScreenShotView: View {
     private let screenshotSpacing: CGFloat = 10
     private let horizontalPadding: CGFloat = 21
     let imageUrls: [URL?]
+    weak var intent: AppInfoDetailIntentProtocol?
     
-    init(imageUrls: [URL?]) {
+    init(imageUrls: [URL?], intent: AppInfoDetailIntentProtocol?) {
         self.imageUrls = imageUrls
+        self.intent = intent
     }
     
     var body: some View {
@@ -28,15 +30,19 @@ struct AppScreenShotView: View {
             
             ScrollView(.horizontal) {
                 LazyHGrid(rows: [.init()], spacing: screenshotSpacing) {
-                    ForEach(imageUrls, id: \.self) { url in
-                        KFImage(url)
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .containerRelativeFrame(.horizontal) { length, _ in
-                                let width = (length - horizontalPadding * 2 - screenshotSpacing) * 2 / 3
-                                return width > 0 ? width : 0
-                            }
-                            .clipShape(RoundedRectangle(cornerRadius: 23))
+                    ForEach(imageUrls.indices, id: \.self) { index in
+                        Button(action: {
+                            intent?.requestFullScreenshot(.init(index: index))
+                        } ) {
+                            KFImage(imageUrls[index])
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .containerRelativeFrame(.horizontal) { length, _ in
+                                    let width = (length - horizontalPadding * 2 - screenshotSpacing) * 2 / 3
+                                    return width > 0 ? width : 0
+                                }
+                                .clipShape(RoundedRectangle(cornerRadius: 23))
+                        }
                     }
                 }
                 .padding(.horizontal, horizontalPadding)

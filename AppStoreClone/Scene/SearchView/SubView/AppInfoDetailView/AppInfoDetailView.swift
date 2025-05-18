@@ -11,15 +11,19 @@ import SwiftUI
 
 protocol AppInfoDetailStateProtocol {
     var infoViewModel: AppDetailInfoViewModel? { get }
-    var downloadStatus: DownloadStatus { get }
+    var showFullScreenshot: Bool { get }
+    var fullScreenInitIndex: Int { get }
 }
 
 protocol AppInfoDetailIntentProtocol: AnyObject {
+    func setShowFullScreenshot(_ showFullScreenshot: Bool)
+    
     func requestAppInfo(_ request: AppInfoDetailModel.PresentAppInfo.Request)
     func requestDownload(_ request: AppInfoDetailModel.TabDownLoad.Request)
     func requestOpenApp(_ request: AppInfoDetailModel.OpenApp.Request)
     func requestStopDownload(_ request: AppInfoDetailModel.StopDownload.Request)
     func requestTapDeveloperButton(_ request: AppInfoDetailModel.TapDeveloperButton.Request)
+    func requestFullScreenshot(_ request: AppInfoDetailModel.FullScreenshot.Request)
 }
 
 struct AppInfoDetailView: View {
@@ -63,7 +67,7 @@ struct AppInfoDetailView: View {
                     )
                         .padding(.bottom, 34)
                     
-                    AppScreenShotView(imageUrls: info.screenshots)
+                    AppScreenShotView(imageUrls: info.screenshots, intent: intent)
                         .padding(.bottom, 20)
                     
                     AppIntroductView(
@@ -85,9 +89,18 @@ struct AppInfoDetailView: View {
                     Spacer()
                 }
             }
+            .fullScreenCover(isPresented: bindingState(key: \.showFullScreenshot, setter: intent.setShowFullScreenshot)) {
+                FullScreenshotView(
+                    isPresented: bindingState(key: \.showFullScreenshot, setter: intent.setShowFullScreenshot),
+                    imageUrls: state.infoViewModel?.screenshots,
+                    initIndex: state.fullScreenInitIndex
+                )
+            }
+            
         } else {
             ProgressView()
         }
+            
     }
     
     private func TopInfoView(iconUrl: URL?, appName: String, appSubTitle: String, downloadStatus: DownloadStatus) -> some View {
@@ -159,6 +172,12 @@ struct AppInfoDetailView: View {
                 }
             }
         }
+    }
+    
+    private func bindingState<T>(key: KeyPath<AppInfoDetailStateProtocol, T>, setter: @escaping (T) -> Void) -> Binding<T> {
+        Binding(get: {
+            state[keyPath: key]
+        }, set: setter)
     }
 }
 

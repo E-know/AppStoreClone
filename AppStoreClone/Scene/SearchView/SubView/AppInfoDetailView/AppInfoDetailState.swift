@@ -16,7 +16,12 @@ enum DownloadStatus: Hashable {
 @Observable
 final class AppInfoDetailState: AppInfoDetailActionProtocol, AppInfoDetailStateProtocol {
     var infoViewModel: AppDetailInfoViewModel?
-    var downloadStatus: DownloadStatus = .notInstalled
+    var showFullScreenshot: Bool = false
+    var fullScreenInitIndex: Int = 0
+    
+    func setShowFullScreenshot(_ showFullScreenshot: Bool) {
+        self.showFullScreenshot = showFullScreenshot
+    }
     
     func presentAppInfo(_ response: AppInfoDetailModel.PresentAppInfo.Response) {
         self.infoViewModel = response.viewModel
@@ -24,12 +29,12 @@ final class AppInfoDetailState: AppInfoDetailActionProtocol, AppInfoDetailStateP
 
     func presentDownloading(_ response: AppInfoDetailModel.Downloading.Response) {
         withAnimation {
-            downloadStatus = .downloading(percent: response.percent)
+            infoViewModel?.downloadStatus = .downloading(percent: response.percent)
         }
     }
     
     func presentCompleteDownLoad(_ response: AppInfoDetailModel.DownloadComplete.Response) {
-        downloadStatus = .installed
+        infoViewModel?.downloadStatus = .installed
     }
     
     func presentOpenApp(_ response: AppInfoDetailModel.OpenApp.Response) {
@@ -40,7 +45,12 @@ final class AppInfoDetailState: AppInfoDetailActionProtocol, AppInfoDetailStateP
     
     func presentStopDownload(_ response: AppInfoDetailModel.StopDownload.Response) {
         withAnimation {
-            downloadStatus = .notInstalled
+            infoViewModel?.downloadStatus = .notInstalled
         }
+    }
+
+    func presentFullScreenshot(_ response: AppInfoDetailModel.FullScreenshot.Response) {
+        fullScreenInitIndex = response.index
+        showFullScreenshot.toggle()
     }
 }

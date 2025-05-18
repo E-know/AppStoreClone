@@ -9,11 +9,14 @@ import Combine
 import Foundation
 
 protocol AppInfoDetailActionProtocol: AnyObject {
+    func setShowFullScreenshot(_ showFullScreenshot: Bool)
+    
     func presentAppInfo(_ response: AppInfoDetailModel.PresentAppInfo.Response)
     func presentDownloading(_ response: AppInfoDetailModel.Downloading.Response)
     func presentCompleteDownLoad(_ response: AppInfoDetailModel.DownloadComplete.Response)
     func presentOpenApp(_ response: AppInfoDetailModel.OpenApp.Response)
     func presentStopDownload(_ response: AppInfoDetailModel.StopDownload.Response)
+    func presentFullScreenshot(_ response: AppInfoDetailModel.FullScreenshot.Response)
 }
 
 
@@ -29,6 +32,10 @@ final class AppInfoDetailIntent: AppInfoDetailIntentProtocol {
     
     deinit {
         print(#file, "Deinit")
+    }
+    
+    func setShowFullScreenshot(_ showFullScreenshot: Bool) {
+        presenter?.setShowFullScreenshot(showFullScreenshot)
     }
     
     func requestAppInfo(_ request: AppInfoDetailModel.PresentAppInfo.Request) {
@@ -83,5 +90,9 @@ final class AppInfoDetailIntent: AppInfoDetailIntentProtocol {
     
     func requestTapDeveloperButton(_ request: AppInfoDetailModel.TapDeveloperButton.Request) {
         print("It is run in Intent hahaha")
+    }
+    
+    func requestFullScreenshot(_ request: AppInfoDetailModel.FullScreenshot.Request) {
+        presenter?.presentFullScreenshot(.init(index: request.index))
     }
 }

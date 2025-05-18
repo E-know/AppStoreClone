@@ -29,5 +29,5 @@ struct AppDetailInfoViewModel {
     
     let appDescription: String
     
-    let downloadStatus: DownloadStatus
+    var downloadStatus: DownloadStatus
 }
