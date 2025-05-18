@@ -10,15 +10,16 @@ import SwiftUI
 
 
 protocol AppInfoDetailStateProtocol {
-    var infoViewModel: AppStoreSearchResultViewModel? { get }
+    var infoViewModel: AppDetailInfoViewModel? { get }
     var downloadStatus: DownloadStatus { get }
 }
 
-protocol AppInfoDetailIntentProtocol {
+protocol AppInfoDetailIntentProtocol: AnyObject {
     func requestAppInfo(_ request: AppInfoDetailModel.PresentAppInfo.Request)
     func requestDownload(_ request: AppInfoDetailModel.TabDownLoad.Request)
     func requestOpenApp(_ request: AppInfoDetailModel.OpenApp.Request)
     func requestStopDownload(_ request: AppInfoDetailModel.StopDownload.Request)
+    func requestTapDeveloperButton(_ request: AppInfoDetailModel.TapDeveloperButton.Request)
 }
 
 struct AppInfoDetailView: View {
@@ -38,31 +39,48 @@ struct AppInfoDetailView: View {
             ScrollView {
                 VStack {
                     TopInfoView(
-                        iconUrl: info.appIcon512,
+                        iconUrl: info.appIcon,
                         appName: info.appName,
-                        appSubTitle: ""
+                        appSubTitle: "",
+                        downloadStatus: info.downloadStatus
                     )
                     .padding()
                     
-                    AppInfoDetailMiddleView()
+                    AppInfoDetailMiddleView(
+                        averageUserRating: info.averageUserRating,
+                        averageUserRatingText: info.averageUserRatingText,
+                        userRatingCountText: info.userRatingCountText,
+                        contentAdvisoryRating: info.contentAdvisorRating,
+                        gerne: info.genre,
+                        developerName: info.developerName
+                    )
                         .padding(.bottom, 11)
                     
-                    AppInfoNewUpdatesView(releaseNote: info.releaseNotes)
+                    AppInfoNewUpdatesView(
+                        appVersion: info.appVersion,
+                        releaseDate: info.releaseDateText,
+                        releaseNote: info.releaseNotes
+                    )
                         .padding(.bottom, 34)
                     
-                    AppScreenShotView(imageUrls: info.screenshotUrls)
+                    AppScreenShotView(imageUrls: info.screenshots)
                         .padding(.bottom, 20)
                     
                     AppIntroductView(
-                        description: info.description,
-                        developerName: info.developerName
+                        description: info.appDescription,
+                        developerName: info.developerName,
+                        intent: intent
                     )
-                    .padding(.bottom, 25)
+                        .padding(.bottom, 25)
                     
-                    RatingAndReviewView()
+                    RatingAndReviewView(
+                        averageUserRating: info.averageUserRating,
+                        averageUserRatingText: info.averageUserRatingText,
+                        userRatingCountText: info.userRatingCountText
+                    )
                         .padding(.bottom, 38)
                     
-                    PrivacyInfoView()
+                    PrivacyInfoView(developerName: info.developerName)
                     
                     Spacer()
                 }
@@ -72,13 +90,17 @@ struct AppInfoDetailView: View {
         }
     }
     
-    private func TopInfoView(iconUrl: URL?, appName: String, appSubTitle: String) -> some View {
+    private func TopInfoView(iconUrl: URL?, appName: String, appSubTitle: String, downloadStatus: DownloadStatus) -> some View {
         HStack(spacing: 16) {
             KFImage(iconUrl)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 118, height: 118)
                 .clipShape(RoundedRectangle(cornerRadius: 20))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 20)
+                        .stroke(Color.subGray, lineWidth: 0.4)
+                )
             
             VStack(alignment: .leading, spacing: 0) {
                 Text(appName)
@@ -92,7 +114,7 @@ struct AppInfoDetailView: View {
                 Spacer()
                 
                 HStack(alignment: .bottom) {
-                    switch state.downloadStatus {
+                    switch downloadStatus {
                         case .notInstalled:
                             Button(action: { intent.requestDownload(.init()) }) {
                                 ZStack {

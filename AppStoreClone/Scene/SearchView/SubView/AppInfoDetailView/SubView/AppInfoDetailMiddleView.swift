@@ -8,6 +8,22 @@
 import SwiftUI
 
 struct AppInfoDetailMiddleView: View {
+    private let averageUserRating: Double
+    private let averageUserRatingText: String
+    private let userRatingCountText: String
+    private let contentAdvisoryRating: String
+    private let gerne: String
+    private let developerName: String
+    
+    init(averageUserRating: Double, averageUserRatingText: String, userRatingCountText: String, contentAdvisoryRating: String, gerne: String, developerName: String) {
+        self.averageUserRating = averageUserRating
+        self.averageUserRatingText = averageUserRatingText
+        self.userRatingCountText = userRatingCountText
+        self.contentAdvisoryRating = contentAdvisoryRating
+        self.gerne = gerne
+        self.developerName = developerName
+    }
+    
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             VStack(spacing: 0) {
@@ -50,27 +66,19 @@ struct AppInfoDetailMiddleView: View {
     
     private func RatingView() -> some View {
         VStack(spacing: 0) {
-            Text("1.3만개의 평가")
+            Text("\(userRatingCountText)개의 평가")
                 .font(11)
                 .padding(.top, 14)
                 .padding(.bottom, 6)
                 .foregroundStyle(Color.subGrayLight)
             
-            Text("3.3")
+            Text(averageUserRatingText)
                 .font(20, .bold)
                 .padding(.bottom, 4)
                 .foregroundStyle(Color.subGray)
             
-            HStack(spacing: 2) {
-                ForEach(0..<5) { _ in
-                    Image(systemName: "star.fill")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 12, height: 12)
-                }
-                .foregroundStyle(Color.subGray)
-            }
-            .padding(.bottom, 12)
+            RatingStarView(starSize: 12, spacing: 2, rating: averageUserRating, color: .subGray)
+                .padding(.bottom, 12)
         }
     }
     
@@ -81,7 +89,7 @@ struct AppInfoDetailMiddleView: View {
                 .foregroundStyle(Color.subGrayLight)
                 .padding(.bottom, 6)
             
-            Text("4+")
+            Text(contentAdvisoryRating)
                 .font(20, .bold)
                 .foregroundStyle(Color.subGray)
                 .padding(.bottom, 3)
@@ -100,12 +108,12 @@ struct AppInfoDetailMiddleView: View {
                 .font(11)
                 .padding(.bottom, 6)
             
-            Text("#11")
+            Text("#\(Int.random(in: 1...50))")
                 .foregroundStyle(Color.subGray)
                 .font(20, .bold)
                 .padding(.bottom, 3)
             
-            Text("금융")
+            Text(gerne)
                 .foregroundStyle(Color.subGrayLight)
                 .font(11)
         }
@@ -123,7 +131,7 @@ struct AppInfoDetailMiddleView: View {
                 .frame(width: 22, height: 22)
                 .foregroundStyle(Color.subGray)
             
-            Text("KakaoBank Corp.")
+            Text(developerName)
                 .font(11)
                 .lineLimit(nil)
                 .padding(.horizontal, 8)
@@ -150,6 +158,6 @@ struct AppInfoDetailMiddleView: View {
     }
 }
 
-#Preview {
-    AppInfoDetailMiddleView()
-}
+//#Preview {
+//    AppInfoDetailMiddleView()
+//}

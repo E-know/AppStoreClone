@@ -8,7 +8,7 @@
 import SwiftUI
 
 enum MainTabModel {
-    enum Tabs: String, CaseIterable, Identifiable {
+    enum Tabs: String, CaseIterable, Hashable, Identifiable {
         case today = "투데이"
         case games = "게임"
         case apps = "앱"

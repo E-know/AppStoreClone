@@ -12,11 +12,13 @@ struct RatingStarView: View {
     private let spacing: CGFloat
     private let rating: Double
     private let rectangleWidth: CGFloat
+    private let color: Color
     
-    init(starSize: CGFloat = 30, spacing: CGFloat = 6, rating: Double = 2.5) { // Rating 20% 단위로 잘라야 할듯.
+    init(starSize: CGFloat = 30, spacing: CGFloat = 6, rating: Double = 2.5, color: Color = .black) { // Rating 20% 단위로 잘라야 할듯.
         self.starSize = starSize
         self.spacing = spacing
         self.rating = rating
+        self.color = color
         
         let filledStarCount = CGFloat(Int(rating))
         rectangleWidth = starSize * filledStarCount + spacing * filledStarCount + (rating - filledStarCount) * starSize
@@ -46,7 +48,7 @@ struct RatingStarView: View {
                         }
                     }
                 }
-                .foregroundStyle(Color.black)
+                .foregroundStyle(color)
             
             
         }

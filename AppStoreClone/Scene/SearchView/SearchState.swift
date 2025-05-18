@@ -9,31 +9,53 @@ import SwiftUI
 
 @Observable
 final class SearchState: SearchModelStateProtocol, SearchModelActionsProtocol {
+    var viewStatus: SearchModel.ViewStatus = .`init`
     var textTerm: String = ""
     var searchable: Bool = false
-    var appInfo: [AppStoreSearchResultViewModel]?
     var goScrollTop: Bool = false
+    
+    var appInfo: [AppStoreSearchResultViewModel]?
     var navigationPath: [SearchNavigationPath] = []
 
     
-    func presentSearchBarTerm(text: String?) {
+    func setSearchBarTerm(text: String?) {
         textTerm = text ?? ""
     }
     
-    func presentSearchable(_ value: Bool) {
+    func setSearchable(_ value: Bool) {
         self.searchable = value
     }
     
-    func presentSearchApp(appInfo: [AppStoreSearchResultDomain]) {
-        self.appInfo = appInfo.map { $0.toViewModel() }
-        goScrollTop.toggle()
-    }
-    
-    func presentNavigationPath(_ path: [SearchNavigationPath]) {
+    func setNavigationPath(_ path: [SearchNavigationPath]) {
         self.navigationPath = path
     }
     
-    func presentNavigationPath(_ path: SearchNavigationPath) {
-        self.navigationPath.append(path)
+    func presentSearchApp(_ response: SearchModel.SearchApp.Response) {
+        self.appInfo = response.appInfo.map { $0.toViewModel() }
+        goScrollTop.toggle()
+    }
+    
+    func presentGoNavigation(_ response: SearchModel.GoNavigation.Response) {
+        self.navigationPath.append(response.path)
+    }
+    
+    func presentDownloadApp(_ response: SearchModel.DownloadApp.Response) {
+        withAnimation {
+            self.appInfo?[response.index].downloadStatus = .downloading(percent: response.percent)
+        }
+    }
+    
+    func presentDownloadAppComplete(_ response: SearchModel.DownloadAppComplete.Response) {
+        self.appInfo?[response.index].downloadStatus = .installed
+    }
+    
+    func presentStopDownloadApp(_ response: SearchModel.StopDownloadApp.Response) {
+        self.appInfo?[response.index].downloadStatus = .notInstalled
+    }
+    
+    func presentOpenApp(_ response: SearchModel.OpenApp.Response) {
+        Task { @MainActor in
+            UIApplication.shared.open(response.appURL)
+        }
     }
 }

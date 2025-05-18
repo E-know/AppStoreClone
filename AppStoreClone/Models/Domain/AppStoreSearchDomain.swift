@@ -8,7 +8,7 @@
 import Foundation
 
 struct AppStoreSearchDomain: Hashable, Equatable {
-    let results: [AppStoreSearchResultDomain]
+    var results: [AppStoreSearchResultDomain]
 }
 
 /// 앱 스토어에서 검색된 결과 항목을 나타내는 Entity입니다.
@@ -71,37 +71,26 @@ struct AppStoreSearchResultDomain: Hashable {
     
     // 게임 센터 지원 여부
     let isGameCenterEnabled: Bool
+    
+    var downloadStatus: DownloadStatus = .notInstalled
 }
 
 extension AppStoreSearchResultDomain {
     func toViewModel() -> AppStoreSearchResultViewModel {
         return AppStoreSearchResultViewModel(
             screenshotUrls: screenshotUrls.map { URL(string: $0) },
-            appIcon100: URL(string: appIcon100),
-            appIcon512: URL(string: appIcon512),
+            appIcon: URL(string: appIcon100),
             averageUserRating: averageUserRating,
-            userRatingCountString: formatNumber(userRatingCount),
-            formattedPrice: formattedPrice,
-            contentAdvisoryRating: contentAdvisoryRating,
+            averageuserRatingText: String(format: "%.01f", averageUserRating),
+            userRatingCountText: formatNumber(userRatingCount),
             appName: appName,
             appId: appId,
-            deveoplerId: deveoplerId,
             developerName: developerName,
-            genres: genres,
-            genreIds: genreIds,
             primaryGenreName: primaryGenreName,
-            primaryGenreId: primaryGenreId,
-            price: price,
-            releaseDate: releaseDate?.toPassedString(),
-            sellerUrl: sellerUrl,
-            releaseNotes: releaseNotes,
-            version: version,
-            currency: currency,
-            description: description,
-            minimumOsVersion: minimumOsVersion,
-            isGameCenterEnabled: isGameCenterEnabled,
-            appStoreURL: URL(string: "https://apps.apple.com/kr/app/id\(appId)")
-            )
+            rank: "#" + String(Int.random(in: 1...50)),
+            downloadButtonText: getDownloadButtonText(currency: self.currency, price: self.price),
+            downloadStatus: downloadStatus
+        )
     }
     
     private func formatNumber(_ number: Int) -> String {
@@ -117,5 +106,54 @@ extension AppStoreSearchResultDomain {
             default:
                 return "\(number / 10_000) 만"
         }
+    }
+    
+    private var appStoreURL: URL? {
+        URL(string: "https://apps.apple.com/kr/app/id\(appId)")
+    }
+    
+    private func getDownloadButtonText(currency: String, price: Int) -> String {
+        guard price > 0 else { return "받기" }
+    
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        guard let formattedPrice = formatter.string(from: NSNumber(value: price)) else { return "받기" }
+        
+        return switch currency {
+            case "USD":
+                "$\(formattedPrice)"
+            case "KRW":
+                "₩\(formattedPrice)"
+            default:
+                "⁉️\(formattedPrice)"
+        }
+    }
+    
+    
+    func toDetailViewModel() -> AppDetailInfoViewModel {
+        let sellerURL: URL? = if let sellerUrl {
+            URL(string: sellerUrl)
+        } else {
+            nil
+        }
+        
+        return AppDetailInfoViewModel(
+            appName: self.appName,
+            appIcon: URL(string: appIcon512),
+            appStoreURL: appStoreURL,
+            sellerUrl: sellerURL,
+            averageUserRating: averageUserRating,
+            averageUserRatingText: String(format: "%.01f", averageUserRating),
+            userRatingCountText: formatNumber(userRatingCount),
+            genre: primaryGenreName,
+            contentAdvisorRating: contentAdvisoryRating,
+            developerName: developerName,
+            appVersion: version,
+            releaseNotes: releaseNotes,
+            releaseDateText: releaseDate?.toPassedString() ?? "",
+            screenshots: screenshotUrls.map { URL(string: $0) },
+            appDescription: description,
+            downloadStatus: downloadStatus
+        )
     }
 }

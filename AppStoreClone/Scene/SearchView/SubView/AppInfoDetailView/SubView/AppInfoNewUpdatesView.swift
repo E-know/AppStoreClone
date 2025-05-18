@@ -9,15 +9,20 @@ import SwiftUI
 
 struct AppInfoNewUpdatesView: View {
     @State var releaseNoteMultiLine: Int? = 2
+    private let appVersion: String
+    private let releaseDate: String
     private let releaseNote: String
     
-    init(releaseNote: String) {
+    
+    init(appVersion: String, releaseDate: String, releaseNote: String) {
+        self.appVersion = appVersion
+        self.releaseDate = releaseDate
         self.releaseNote = releaseNote
     }
     
     var body: some View {
         VStack(spacing: 0) {
-            Button(action: {print("새로운 소식")}) {
+            Button(action: { print("새로운 소식")}) {
                 HStack {
                     Text("새로운 소식")
                         .font(19, .bold)
@@ -32,12 +37,12 @@ struct AppInfoNewUpdatesView: View {
             .padding(.bottom, 12)
             
             HStack {
-                Text("버전 2.47.1")
+                Text("버전 \(appVersion)")
                     .font(12)
                 
                 Spacer()
                 
-                Text("2주 전")
+                Text(releaseDate)
                     .font(12)
             }
             .foregroundStyle(Color.subGray)
@@ -45,9 +50,11 @@ struct AppInfoNewUpdatesView: View {
             
             HStack {
                 Text(releaseNote)
-                .font(12)
-                .lineSpacing(8)
-                .lineLimit(releaseNoteMultiLine)
+                    .font(12)
+                    .lineSpacing(8)
+                    .lineLimit(releaseNoteMultiLine)
+                
+                Spacer()
                 
                 // TODO: 이 부분 수정하기.
                 if releaseNoteMultiLine != nil {

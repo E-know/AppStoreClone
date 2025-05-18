@@ -9,7 +9,16 @@ import SwiftUI
 
 struct RatingAndReviewView: View {
     private let horizontalPadding: CGFloat = 20
-    @State private var reviewItemSize: CGFloat = 0
+    private let averageUserRating: Double
+    private let averageUserRatingText: String
+    private let userRatingCountText: String
+    
+    init(averageUserRating: Double, averageUserRatingText: String, userRatingCountText: String) {
+        self.averageUserRating = averageUserRating
+        self.averageUserRatingText = averageUserRatingText
+        self.userRatingCountText = userRatingCountText
+    }
+
     var body: some View {
         VStack {
             ReviewSummaryView()
@@ -19,14 +28,6 @@ struct RatingAndReviewView: View {
                 .padding(.bottom, 24)
             
             TapToRateView()
-        }
-        .overlay {
-            GeometryReader { geometry in
-                Task { @MainActor in
-                    self.reviewItemSize = geometry.size.width - self.horizontalPadding * 2
-                }
-                return Color.clear
-            }
         }
     }
     
@@ -44,20 +45,20 @@ struct RatingAndReviewView: View {
             }
             
             HStack(alignment: .center) {
-                Text("4.7")
+                Text(averageUserRatingText)
                     .font(70, .bold)
                 
                 Spacer()
                 
                 VStack(alignment: .trailing, spacing: 8) {
-                    HStack(spacing: 6) {
-                        ForEach(0..<5) { _ in
-                            Image(systemName: "star.fill")
-                                .frame(width: 16, height: 16)
-                        }
-                    }
+                    RatingStarView(
+                        starSize: 16,
+                        spacing: 6,
+                        rating: averageUserRating,
+                        color: .black
+                    )
                     
-                    Text("15만개의 평가")
+                    Text("\(userRatingCountText)개의 평가")
                         .font(14)
                         .foregroundStyle(Color.subGray)
                 }
@@ -78,8 +79,11 @@ struct RatingAndReviewView: View {
                 HStack(spacing: 14) {
                     ForEach(0..<5) { _ in
                         ReviewItem()
-                            .frame(width: reviewItemSize)
                             .shadow(color: Color.subGray, radius: 8, x: 2, y: 4)
+                            .containerRelativeFrame(.horizontal) { length, _ in
+                                let width = length - self.horizontalPadding * 2
+                                return width < 0 ? 0 : width
+                            }
                     }
                 }
                 .scrollTargetLayout()
@@ -94,7 +98,7 @@ struct RatingAndReviewView: View {
     @ViewBuilder
     private func ReviewItem() -> some View {
         VStack(alignment: .leading) {
-            Text("원래 잘썼는데 업데이트하고나서")
+            Text("엄청 엄청 잘쓰고 있어요")
                 .font(14)
                 .padding(.bottom, 14)
             
@@ -108,7 +112,7 @@ struct RatingAndReviewView: View {
                     }
                 }
                 
-                Text("2월 23일・dwronn")
+                Text("2월 23일・유우우저닉네임")
                     .font(12)
                     .foregroundStyle(Color.subGray)
                 
@@ -119,9 +123,11 @@ struct RatingAndReviewView: View {
             
             
             Text("""
-                ui 대대적 업데이트 후에 검색 결과 리스트뷰가 너무 보기 불편해졌어요
-                1.한번검색하고나면 지도이동한 뒤에 이지역 재검색이 잘 안뜨고
-                2. 장소별 마감시간을 보고싶은데 영업중이라고만 뜨고 몇시까지 인지는 안떠서 리스트에서 그 장소를 다 일일이 눌러서 들어가야 돼요(밤늦게 아직 마감시간이 많이남은 식당이나 카페 찾을떄!!!!)이것저것샬라샬라
+                하하호호 이건 몇줄까지
+                될까요?? 알아 맞춰보세요
+                딩동댕동
+                척척박사님
+                알아맞춰보세요
                 """)
             .font(12)
             .lineLimit(5)
@@ -202,5 +208,5 @@ struct RatingAndReviewView: View {
 }
 
 #Preview {
-    RatingAndReviewView()
+    RatingAndReviewView(averageUserRating: 4.7, averageUserRatingText: "4.7", userRatingCountText: "15만개")
 }

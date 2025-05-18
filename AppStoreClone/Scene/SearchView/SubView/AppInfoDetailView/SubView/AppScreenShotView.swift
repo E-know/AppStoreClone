@@ -33,7 +33,8 @@ struct AppScreenShotView: View {
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .containerRelativeFrame(.horizontal) { length, _ in
-                                return (length - horizontalPadding * 2 - screenshotSpacing) * 2 / 3
+                                let width = (length - horizontalPadding * 2 - screenshotSpacing) * 2 / 3
+                                return width > 0 ? width : 0
                             }
                             .clipShape(RoundedRectangle(cornerRadius: 23))
                     }

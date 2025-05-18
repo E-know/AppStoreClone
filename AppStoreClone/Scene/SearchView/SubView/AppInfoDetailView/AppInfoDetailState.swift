@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-enum DownloadStatus {
+enum DownloadStatus: Hashable {
     case notInstalled
     case downloading(percent: Float)
     case installed
@@ -15,7 +15,7 @@ enum DownloadStatus {
 
 @Observable
 final class AppInfoDetailState: AppInfoDetailActionProtocol, AppInfoDetailStateProtocol {
-    var infoViewModel: AppStoreSearchResultViewModel?
+    var infoViewModel: AppDetailInfoViewModel?
     var downloadStatus: DownloadStatus = .notInstalled
     
     func presentAppInfo(_ response: AppInfoDetailModel.PresentAppInfo.Response) {

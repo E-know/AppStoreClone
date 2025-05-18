@@ -17,14 +17,14 @@ protocol AppInfoDetailActionProtocol: AnyObject {
 }
 
 
-final class AppInfoDetailIntent: AppInfoDetailIntentProtocol, @unchecked Sendable {
+final class AppInfoDetailIntent: AppInfoDetailIntentProtocol {
     weak var presenter: AppInfoDetailActionProtocol?
     var appInfo: AppStoreSearchResultDomain?
     var appDownloadPercent: Float = 0
     var timerCancellable: AnyCancellable?
     
-    init(_ action: AppInfoDetailActionProtocol) {
-        self.presenter = action
+    init(_ presenter: AppInfoDetailActionProtocol) {
+        self.presenter = presenter
     }
     
     deinit {
@@ -35,7 +35,7 @@ final class AppInfoDetailIntent: AppInfoDetailIntentProtocol, @unchecked Sendabl
         self.appInfo = request.appInfo
         
         Task {
-            let viewModel = request.appInfo.toViewModel()
+            let viewModel = request.appInfo.toDetailViewModel()
             presenter?.presentAppInfo(.init(viewModel: viewModel))
         }
     }
@@ -80,53 +80,8 @@ final class AppInfoDetailIntent: AppInfoDetailIntentProtocol, @unchecked Sendabl
         appDownloadPercent = 0
         presenter?.presentStopDownload(.init())
     }
-}
-
-
-enum AppInfoDetailModel {
-    enum PresentAppInfo {
-        struct Request {
-            let appInfo: AppStoreSearchResultDomain
-        }
-        
-        struct Response {
-            let viewModel: AppStoreSearchResultViewModel
-        }
-    }
     
-    enum TabDownLoad {
-        struct Request {}
-    }
-    
-    enum Downloading {
-        struct Response {
-            let percent: Float
-        }
-    }
-    
-    enum DownloadComplete {
-        struct Response {}
-    }
-    
-    enum StopDownload {
-        struct Request {}
-        
-        struct Response {}
-    }
-    
-    enum OpenApp {
-        struct Request {}
-        
-        struct Response {
-            let url: URL
-        }
-    }
-    
-    enum Share {
-        struct Request {}
-        
-        struct Response {
-            let url: URL
-        }
+    func requestTapDeveloperButton(_ request: AppInfoDetailModel.TapDeveloperButton.Request) {
+        print("It is run in Intent hahaha")
     }
 }

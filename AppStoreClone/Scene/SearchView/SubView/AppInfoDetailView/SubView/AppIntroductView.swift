@@ -9,14 +9,16 @@ import SwiftUI
 
 struct AppIntroductView: View {
     @State var descriptionMultiLineCount: Int? = 3
-    
     private let textFontSize: CGFloat = 12
+    
     private let description: String
     private let developerName: String
+    weak var intent: AppInfoDetailIntentProtocol?
     
-    init(description: String, developerName: String) {
+    init(description: String, developerName: String, intent: AppInfoDetailIntentProtocol?) {
         self.description = description
         self.developerName = developerName
+        self.intent = intent
     }
     
     var body: some View {
@@ -46,7 +48,7 @@ struct AppIntroductView: View {
             }
             
             Button(action: {
-                print(developerName)
+                intent?.requestTapDeveloperButton(.init())
             }) {
                 HStack {
                     VStack(alignment: .leading) {

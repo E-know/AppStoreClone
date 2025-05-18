@@ -8,12 +8,13 @@
 import SwiftUI
 
 struct MainTabView: View {
+    @State private var selected = MainTabModel.Tabs.search
     var body: some View {
-        TabView {
+        TabView(selection: $selected) {
             ForEach(MainTabModel.Tabs.allCases) { tabInfo in
-                Tab(tabInfo.rawValue, systemImage: tabInfo.tabImageName) {
+                Tab(tabInfo.rawValue, systemImage: tabInfo.tabImageName, value: tabInfo, content: {
                     tabInfo.tabView
-                }
+                })
             }
         }
     }
