@@ -9,7 +9,6 @@ import SwiftUI
 
 @Observable
 final class SearchState: SearchModelStateProtocol, SearchModelActionsProtocol {
-    var viewStatus: SearchModel.ViewStatus = .`init`
     var textTerm: String = ""
     var searchable: Bool = false
     var goScrollTop: Bool = false

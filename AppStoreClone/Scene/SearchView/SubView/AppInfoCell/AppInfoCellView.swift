@@ -165,6 +165,15 @@ struct AppInfoCellView: View {
     }
 }
 
-//#Preview {
-//    AppInfoCellView(appInfo: <#AppStoreSearchResultViewModel#>)
-//}
+#Preview {
+    let rawData = AppStoreSearchAPI.search(term: "Test").sampleData
+    let entity = try? JSONDecoder().decode(AppStoreSearchEntity.self, from: rawData)
+    let domain = entity?.toDomain()
+    
+    
+    if let viewModel = domain?.results.first?.toViewModel() {
+        AppInfoCellView(appInfo: viewModel)
+    } else {
+        Text("fail")
+    }
+}

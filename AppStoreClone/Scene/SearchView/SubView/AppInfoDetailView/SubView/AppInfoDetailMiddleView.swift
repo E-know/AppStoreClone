@@ -158,6 +158,20 @@ struct AppInfoDetailMiddleView: View {
     }
 }
 
-//#Preview {
-//    AppInfoDetailMiddleView()
-//}
+#Preview {
+    let rawData = AppStoreSearchAPI.search(term: "Test").sampleData
+    let entity = try? JSONDecoder().decode(AppStoreSearchEntity.self, from: rawData)
+    let domain = entity?.toDomain()
+    guard let viewModel = domain?.results.first?.toDetailViewModel() else {
+        return Text("Error")
+    }
+    
+    return AppInfoDetailMiddleView(
+        averageUserRating: viewModel.averageUserRating,
+        averageUserRatingText: viewModel.averageUserRatingText,
+        userRatingCountText: viewModel.userRatingCountText,
+        contentAdvisoryRating: viewModel.contentAdvisorRating,
+        gerne: viewModel.genre,
+        developerName: viewModel.developerName
+    )
+}

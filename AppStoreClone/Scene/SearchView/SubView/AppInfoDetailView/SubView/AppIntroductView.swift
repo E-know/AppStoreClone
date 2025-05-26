@@ -76,6 +76,11 @@ struct AppIntroductView: View {
     }
 }
 
-//#Preview {
-//    AppIntroductView()
-//}
+#Preview {
+    let rawData = AppStoreSearchAPI.search(term: "Test").sampleData
+    let entity = try? JSONDecoder().decode(AppStoreSearchEntity.self, from: rawData)
+    let domain = entity?.toDomain()
+    guard let viewModel = domain?.results.first?.toDetailViewModel() else { return Text("Error") }
+    
+    return AppIntroductView(description: viewModel.appDescription, developerName: viewModel.developerName, action: { _ in })
+}

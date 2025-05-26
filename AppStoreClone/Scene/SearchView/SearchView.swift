@@ -5,8 +5,8 @@
 //  Created by Inho Choi on 5/4/25.
 //
 
-import Kingfisher
 import Combine
+import Kingfisher
 import SwiftUI
 
 protocol SearchModelStateProtocol {
@@ -79,7 +79,6 @@ struct SearchView: View {
         Binding(get: { state[keyPath: key] }, set: setter)
     }
     
-    @ViewBuilder
     private var SearchFailView: some View {
         ContentUnavailableView {
             Label("검색 실패", systemImage: "magnifyingglass")
@@ -89,29 +88,28 @@ struct SearchView: View {
         }
     }
     
-    @ViewBuilder
     private func SearchAppResultView(appInfo: [AppStoreSearchResultViewModel]) -> some View {
-            ScrollViewReader { proxy in
-                ScrollView {
-                    LazyVGrid(columns: [.init()], spacing: 0) {
-                        ForEach(appInfo) { info in
-                            Button(action: {
-                                intent.requestGoNavigation(.init(appID: info.appId))
-                            }) {
-                                AppInfoCellView(appInfo: info, intent: intent)
-                                    .padding(.vertical, 24)
-                            }
+        ScrollViewReader { proxy in
+            ScrollView {
+                LazyVGrid(columns: [.init()], spacing: 0) {
+                    ForEach(appInfo) { info in
+                        Button(action: {
+                            intent.requestGoNavigation(.init(appID: info.appId))
+                        }) {
+                            AppInfoCellView(appInfo: info, intent: intent)
+                                .padding(.vertical, 24)
                         }
                     }
-                    .id("top")
-                    .padding(.horizontal, 20)
                 }
-                .onChange(of: state.goScrollTop) {
-                    withAnimation {
-                        proxy.scrollTo("top", anchor: .top)
-                    }
+                .id("top")
+                .padding(.horizontal, 20)
+            }
+            .onChange(of: state.goScrollTop) {
+                withAnimation {
+                    proxy.scrollTo("top", anchor: .top)
                 }
             }
+        }
     }
 }
 

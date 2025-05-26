@@ -53,3 +53,13 @@ struct AppScreenShotView: View {
         }
     }
 }
+
+#Preview {
+    let rawData = AppStoreSearchAPI.search(term: "Test").sampleData
+    let entity = try? JSONDecoder().decode(AppStoreSearchEntity.self, from: rawData)
+    let domain = entity?.toDomain()
+    guard let screenshots = domain?.results.first?.toDetailViewModel().screenshots else {
+        return Text("Error")
+    }
+    return AppScreenShotView(imageUrls: screenshots, action: { _ in })
+}

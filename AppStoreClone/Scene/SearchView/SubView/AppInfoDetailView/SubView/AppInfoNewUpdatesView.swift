@@ -71,3 +71,13 @@ struct AppInfoNewUpdatesView: View {
         .padding(.horizontal, 20)
     }
 }
+
+#Preview {
+    let rawData = AppStoreSearchAPI.search(term: "Test").sampleData
+    let entity = try? JSONDecoder().decode(AppStoreSearchEntity.self, from: rawData)
+    let domain = entity?.toDomain()
+    guard let viewModel = domain?.results.first?.toDetailViewModel() else {
+        return Text("Error")
+    }
+    return AppInfoNewUpdatesView(appVersion: viewModel.appVersion, releaseDate: viewModel.releaseDateText, releaseNote: viewModel.releaseNotes)
+}

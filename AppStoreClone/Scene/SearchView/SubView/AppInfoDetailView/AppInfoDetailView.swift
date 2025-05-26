@@ -63,33 +63,33 @@ struct AppInfoDetailView: View {
                         gerne: info.genre,
                         developerName: info.developerName
                     )
-                        .padding(.bottom, 11)
+                    .padding(.bottom, 11)
                     
                     AppInfoNewUpdatesView(
                         appVersion: info.appVersion,
                         releaseDate: info.releaseDateText,
                         releaseNote: info.releaseNotes
                     )
-                        .padding(.bottom, 34)
+                    .padding(.bottom, 34)
                     
                     AppScreenShotView(imageUrls: info.screenshots) { action in
                         guard case let .tapScreenShot(index) = action else { return }
                         intent.requestFullScreenshot(.init(index: index))
                     }
-                        .padding(.bottom, 20)
+                    .padding(.bottom, 20)
                     
                     AppIntroductView(description: info.appDescription, developerName: info.developerName) { action in
                         guard case .tapDeveloperButton = action else { return }
                         intent.requestTapDeveloperButton(.init())
                     }
-                        .padding(.bottom, 25)
+                    .padding(.bottom, 25)
                     
                     RatingAndReviewView(
                         averageUserRating: info.averageUserRating,
                         averageUserRatingText: info.averageUserRatingText,
                         userRatingCountText: info.userRatingCountText
                     )
-                        .padding(.bottom, 38)
+                    .padding(.bottom, 38)
                     
                     PrivacyInfoView(developerName: info.developerName)
                     
@@ -107,7 +107,7 @@ struct AppInfoDetailView: View {
         } else {
             ProgressView()
         }
-            
+        
     }
     
     private func TopInfoView(iconUrl: URL?, appName: String, appSubTitle: String, downloadStatus: DownloadStatus) -> some View {
@@ -188,8 +188,13 @@ struct AppInfoDetailView: View {
     }
 }
 
-//#Preview {
-//    NavigationStack {
-//        AppInfoDetailView()
-//    }
-//}
+#Preview {
+    let rawData = AppStoreSearchAPI.search(term: "Test").sampleData
+    let entity = try? JSONDecoder().decode(AppStoreSearchEntity.self, from: rawData)
+    let domain = entity?.toDomain()
+    guard let appInfo = domain?.results.first else { return Text("Fail") }
+    
+    return NavigationStack {
+        AppInfoDetailView(appInfo: appInfo)
+    }
+}
