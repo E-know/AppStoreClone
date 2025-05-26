@@ -12,11 +12,11 @@ struct AppScreenShotView: View {
     private let screenshotSpacing: CGFloat = 10
     private let horizontalPadding: CGFloat = 21
     let imageUrls: [URL?]
-    weak var intent: AppInfoDetailIntentProtocol?
+    private let action: (AppInfoDetailChildViewAction) -> Void
     
-    init(imageUrls: [URL?], intent: AppInfoDetailIntentProtocol?) {
+    init(imageUrls: [URL?], action: @escaping (AppInfoDetailChildViewAction) -> Void) {
         self.imageUrls = imageUrls
-        self.intent = intent
+        self.action = action
     }
     
     var body: some View {
@@ -32,7 +32,7 @@ struct AppScreenShotView: View {
                 LazyHGrid(rows: [.init()], spacing: screenshotSpacing) {
                     ForEach(imageUrls.indices, id: \.self) { index in
                         Button(action: {
-                            intent?.requestFullScreenshot(.init(index: index))
+                            action(.tapScreenShot(index))
                         } ) {
                             KFImage(imageUrls[index])
                                 .resizable()

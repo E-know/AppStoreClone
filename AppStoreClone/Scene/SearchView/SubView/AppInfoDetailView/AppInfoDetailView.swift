@@ -26,6 +26,11 @@ protocol AppInfoDetailIntentProtocol: AnyObject {
     func requestFullScreenshot(_ request: AppInfoDetailModel.FullScreenshot.Request)
 }
 
+enum AppInfoDetailChildViewAction {
+    case tapScreenShot(Int)
+    case tapDeveloperButton
+}
+
 struct AppInfoDetailView: View {
     private let state: AppInfoDetailStateProtocol
     private let intent: AppInfoDetailIntentProtocol
@@ -67,14 +72,16 @@ struct AppInfoDetailView: View {
                     )
                         .padding(.bottom, 34)
                     
-                    AppScreenShotView(imageUrls: info.screenshots, intent: intent)
+                    AppScreenShotView(imageUrls: info.screenshots) { action in
+                        guard case let .tapScreenShot(index) = action else { return }
+                        intent.requestFullScreenshot(.init(index: index))
+                    }
                         .padding(.bottom, 20)
                     
-                    AppIntroductView(
-                        description: info.appDescription,
-                        developerName: info.developerName,
-                        intent: intent
-                    )
+                    AppIntroductView(description: info.appDescription, developerName: info.developerName) { action in
+                        guard case .tapDeveloperButton = action else { return }
+                        intent.requestTapDeveloperButton(.init())
+                    }
                         .padding(.bottom, 25)
                     
                     RatingAndReviewView(

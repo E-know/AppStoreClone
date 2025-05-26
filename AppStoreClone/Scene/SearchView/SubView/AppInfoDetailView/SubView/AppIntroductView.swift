@@ -14,11 +14,12 @@ struct AppIntroductView: View {
     private let description: String
     private let developerName: String
     weak var intent: AppInfoDetailIntentProtocol?
+    private let action: (AppInfoDetailChildViewAction) -> Void
     
-    init(description: String, developerName: String, intent: AppInfoDetailIntentProtocol?) {
+    init(description: String, developerName: String, action: @escaping (AppInfoDetailChildViewAction) -> Void) {
         self.description = description
         self.developerName = developerName
-        self.intent = intent
+        self.action = action
     }
     
     var body: some View {
@@ -48,7 +49,7 @@ struct AppIntroductView: View {
             }
             
             Button(action: {
-                intent?.requestTapDeveloperButton(.init())
+                action(.tapDeveloperButton)
             }) {
                 HStack {
                     VStack(alignment: .leading) {
