@@ -124,11 +124,11 @@ struct AppInfoDetailView: View {
             
             VStack(alignment: .leading, spacing: 0) {
                 Text(appName)
-                    .font(.system(size: 19))
+                    .font(19)
                     .padding(.bottom, 8)
                 
                 Text(appSubTitle)
-                    .font(.system(size: 12))
+                    .font(12)
                     .foregroundStyle(Color.subGray)
                 
                 Spacer()
@@ -144,7 +144,7 @@ struct AppInfoDetailView: View {
                                     
                                     Text("설치")
                                         .foregroundStyle(Color.white)
-                                        .font(.system(size: 13, weight: .bold))
+                                        .font(13, .bold)
                                 }
                             }
                         case .downloading(let percent):
@@ -160,7 +160,7 @@ struct AppInfoDetailView: View {
                                     
                                     Text("열기")
                                         .foregroundStyle(Color.white)
-                                        .font(.system(size: 13, weight: .bold))
+                                        .font(13, .bold)
                                 }
                             }
                     }

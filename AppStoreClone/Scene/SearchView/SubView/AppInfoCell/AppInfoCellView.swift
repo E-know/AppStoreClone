@@ -44,13 +44,14 @@ struct AppInfoCellView: View {
             
             VStack(alignment: .leading, spacing: 6) {
                 Text(appInfo.appName)
+                    .font(13, .semibold)
                     .lineLimit(1)
                     .truncationMode(.tail)
                     .foregroundStyle(Color.black)
-                    .font(.system(size: 13, weight: .semibold))
+                    
                 
                 Text("")
-                    .font(.system(size: 11))
+                    .font(11)
                     .foregroundStyle(Color.subGray)
             }
             
@@ -69,7 +70,7 @@ struct AppInfoCellView: View {
                 .padding(.trailing, 2)
             
             Text(appInfo.userRatingCountText)
-                .font(.system(size: 11, weight: .semibold))
+                .font(11, .semibold)
                 
             Spacer()
             
@@ -81,7 +82,7 @@ struct AppInfoCellView: View {
                 .padding(.trailing, 5)
             
             Text(appInfo.developerName)
-                .font(.system(size: 11, weight: .semibold))
+                .font(11, .semibold)
                 
             Spacer()
             
@@ -96,7 +97,7 @@ struct AppInfoCellView: View {
     private func RankView() -> some View {
         HStack {
             Text(appInfo.rank)
-                .font(.system(size: 9, weight: .semibold))
+                .font(9, .semibold)
                 .padding(.vertical, 1)
                 .padding(.horizontal, 4)
                 .overlay(
@@ -107,7 +108,7 @@ struct AppInfoCellView: View {
             
             
             Text(appInfo.primaryGenreName)
-                .font(.system(size: 11, weight: .semibold))
+                .font(11, .semibold)
         }
     }
     
@@ -157,7 +158,7 @@ struct AppInfoCellView: View {
                             .foregroundStyle(Color.downloadBG)
                         
                         Text("열기")
-                            .font(.system(size: 12, weight: .bold))
+                            .font(12, .bold)
                             .foregroundStyle(Color.download)
                     }
                 }

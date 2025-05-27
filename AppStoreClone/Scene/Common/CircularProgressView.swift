@@ -21,7 +21,7 @@ struct CircularProgressView: View {
                 .rotationEffect(.degrees(-90)) // 12시 방향부터 시작하도록 회전
 
             Text("\(Int(progress * 100))%")
-                .font(.system(size: 12, weight: .semibold))
+                .font(12, .semibold)
                 .foregroundColor(.blue)
         }
         .frame(width: 40, height: 40)
