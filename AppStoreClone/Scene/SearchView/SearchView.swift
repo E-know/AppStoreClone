@@ -30,8 +30,8 @@ protocol SearchIntentProtocol: AnyObject {
     func requestOpenApp(_ request: SearchModel.OpenApp.Request)
 }
 
-struct SearchView: View {
-    private let state: SearchModelStateProtocol
+struct SearchView: MVIView {
+    let state: SearchModelStateProtocol
     private let intent: SearchIntentProtocol
     
     init() {
@@ -42,7 +42,7 @@ struct SearchView: View {
     
     
     var body: some View {
-        NavigationStack(path: bindingState(key: \.navigationPath, setter: intent.setNavigationPath)) {
+        NavigationStack(path: bind(\.navigationPath, intent.setNavigationPath)) {
             Group {
                 if let appInfo = state.appInfo {
                     if appInfo.isEmpty {
@@ -57,8 +57,8 @@ struct SearchView: View {
             .navigationTitle("검색")
             .toolbarTitleDisplayMode(.inlineLarge)
             .searchable(
-                text: bindingState(key: \.textTerm, setter: intent.setSearchBarTerm),
-                isPresented: bindingState(key: \.searchable, setter: intent.setSearchable),
+                text: bind(\.textTerm, intent.setSearchBarTerm),
+                isPresented: bind(\.searchable, intent.setSearchable),
                 placement: .navigationBarDrawer(displayMode: .always),
                 prompt: "게임, 앱, 스토리 등"
             )
@@ -73,10 +73,6 @@ struct SearchView: View {
                 }
             }
         }
-    }
-    
-    private func bindingState<T>(key: KeyPath<SearchModelStateProtocol, T>, setter: @escaping (T) -> Void) -> Binding<T> {
-        Binding(get: { state[keyPath: key] }, set: setter)
     }
     
     private var SearchFailView: some View {
