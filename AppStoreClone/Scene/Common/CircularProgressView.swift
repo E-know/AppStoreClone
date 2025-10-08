@@ -24,6 +24,7 @@ struct CircularProgressView: View {
                 .font(12, .semibold)
                 .foregroundColor(.blue)
         }
+
         .frame(width: 40, height: 40)
     }
 }

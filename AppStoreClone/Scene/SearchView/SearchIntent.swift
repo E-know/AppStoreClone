@@ -19,6 +19,7 @@ protocol SearchModelActionsProtocol: AnyObject {
     func presentDownloadAppComplete(_ response: SearchModel.DownloadAppComplete.Response)
     func presentStopDownloadApp(_ response: SearchModel.StopDownloadApp.Response)
     func presentOpenApp(_ response: SearchModel.OpenApp.Response)
+    func presentShowAlert(_ response: SearchModel.ShowAlert.Response)
 }
 
 final class SearchIntent: SearchIntentProtocol {
@@ -46,11 +47,21 @@ final class SearchIntent: SearchIntentProtocol {
     
     func requestSearchApp(_ request: SearchModel.SearchApp.Request) {
         Task {
-            let worker = AppStoreSearchWorker()
-            let domainData = try await worker.search(term: request.term)
-            self.appSearchResult = domainData
-            
-            state?.presentSearchApp(.init(appInfo: domainData.results))
+            do {
+                let worker = AppStoreSearchWorker()
+                let domainData = try await worker.search(term: request.term)
+                self.appSearchResult = domainData
+
+                state?.presentSearchApp(.init(appInfo: domainData.results))
+            } catch {
+                state?.presentShowAlert(.init(
+                    alertData: AlertData(
+                        title: "에러",
+                        message: "\(error.localizedDescription)\n앱 정보를 불러오는데 실패했습니다.\n잠시 후 다시 시도해주세요.",
+                        buttonTitle: "확인"
+                    )
+                ))
+            }
         }
     }
     
@@ -112,12 +123,20 @@ final class SearchIntent: SearchIntentProtocol {
         Task {
             guard
                 let domain = appSearchResult?.results.filter({ $0.appId == request.appID }).first,
-                let sellerUrl = domain.sellerUrl,
-                let appURL = URL(string: sellerUrl)
+                let sellerUrl = domain.sellerUrl
             else { return }
             
-            state?.presentOpenApp(.init(appURL: appURL))
+            state?.presentOpenApp(.init(appURL: sellerUrl))
         }
+    }
+    
+    func requestShowAlert(_ request: SearchModel.ShowAlert.Request) {
+        let alertData = AlertData(
+            title: request.title,
+            message: request.message,
+            buttonTitle: request.buttonTitle
+        )
+        state?.presentShowAlert(.init(alertData: alertData))
     }
 }
 

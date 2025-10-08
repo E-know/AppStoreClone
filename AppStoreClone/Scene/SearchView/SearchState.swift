@@ -15,6 +15,7 @@ final class SearchState: SearchModelStateProtocol, SearchModelActionsProtocol {
     
     var appInfo: [AppStoreSearchResultViewModel]?
     var navigationPath: [SearchNavigationPath] = []
+    var alertData: AlertData?
 
     
     func setSearchBarTerm(text: String?) {
@@ -56,5 +57,9 @@ final class SearchState: SearchModelStateProtocol, SearchModelActionsProtocol {
         Task { @MainActor in
             UIApplication.shared.open(response.appURL)
         }
+    }
+
+    func presentShowAlert(_ response: SearchModel.ShowAlert.Response) {
+        self.alertData = response.alertData
     }
 }

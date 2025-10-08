@@ -18,8 +18,6 @@ struct AppStoreSearchResultViewModel: Identifiable, Hashable {
     
     // 앱의 스크린샷 URL 목록
     let screenshotUrls: [URL?]
-    
-    // 앱 아이콘 (100x100)
     let appIcon: URL?
 
     // 평균 사용자 평점
@@ -39,7 +37,6 @@ struct AppStoreSearchResultViewModel: Identifiable, Hashable {
     let primaryGenreName: String
     let rank: String
     let downloadButtonText: String
-
     
     var downloadStatus: DownloadStatus
 }

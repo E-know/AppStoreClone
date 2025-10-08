@@ -15,6 +15,7 @@ protocol SearchModelStateProtocol {
     var appInfo: [AppStoreSearchResultViewModel]? { get }
     var goScrollTop: Bool { get }
     var navigationPath: [SearchNavigationPath] { get }
+    var alertData: AlertData? { get }
 }
 
 protocol SearchIntentProtocol: AnyObject {
@@ -28,6 +29,7 @@ protocol SearchIntentProtocol: AnyObject {
     func requestDownloadApp(_ request: SearchModel.DownloadApp.Request)
     func requestStopDownloadApp(_ request: SearchModel.StopDownloadApp.Request)
     func requestOpenApp(_ request: SearchModel.OpenApp.Request)
+    func requestShowAlert(_ request: SearchModel.ShowAlert.Request)
 }
 
 struct SearchView: MVIView {
@@ -72,6 +74,17 @@ struct SearchView: MVIView {
                     Text("Error")
                 }
             }
+            .alert(item: Binding<AlertData?>(
+                get: { state.alertData },
+                set: { _ in }
+            )) { alertData in
+                Alert(
+                    title: Text(alertData.title),
+                    message: Text(alertData.message),
+                    dismissButton: .default(Text(alertData.buttonTitle))
+                )
+            }
+
         }
     }
     

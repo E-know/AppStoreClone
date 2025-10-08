@@ -70,10 +70,7 @@ final class AppInfoDetailIntent: AppInfoDetailIntentProtocol {
     }
     
     func requestOpenApp(_ request: AppInfoDetailModel.OpenApp.Request) {
-        guard
-            let urlString = appInfo?.sellerUrl,
-            let url = URL(string: urlString)
-        else { return }
+        guard let url = appInfo?.sellerUrl else { return }
         
         Task { [weak self] in
             guard let self else { return }

@@ -1,4 +1,4 @@
-//
+///
 //  AppInfoDetailView.swift
 //  AppStoreClone
 //
@@ -17,7 +17,7 @@ protocol AppInfoDetailStateProtocol {
 
 protocol AppInfoDetailIntentProtocol: AnyObject {
     func setShowFullScreenshot(_ showFullScreenshot: Bool)
-    
+
     func requestAppInfo(_ request: AppInfoDetailModel.PresentAppInfo.Request)
     func requestDownload(_ request: AppInfoDetailModel.TabDownLoad.Request)
     func requestOpenApp(_ request: AppInfoDetailModel.OpenApp.Request)
@@ -34,19 +34,33 @@ enum AppInfoDetailChildViewAction {
 struct AppInfoDetailView: View {
     private let state: AppInfoDetailStateProtocol
     private let intent: AppInfoDetailIntentProtocol
-    
+    @State private var scrollPosition: CGFloat = 0 {
+        didSet {
+            print(scrollPosition)
+        }
+    }
+
     init(appInfo: AppStoreSearchResultDomain) {
         let state = AppInfoDetailState()
         self.intent = AppInfoDetailIntent(state)
         self.state = state
-        
+
         intent.requestAppInfo(.init(appInfo: appInfo))
     }
-    
+
     var body: some View {
         if let info = state.infoViewModel {
             ScrollView {
-                VStack {
+                VStack(spacing: 0) {
+                    GeometryReader { geometry in
+                        let minY = geometry.frame(in: .named("scroll")).minY
+                        Color.clear
+                            .onChange(of: minY) {
+                                self.scrollPosition = -minY
+                            }
+                    }
+                    .frame(height: 0)
+
                     TopInfoView(
                         iconUrl: info.appIcon,
                         appName: info.appName,
@@ -54,7 +68,7 @@ struct AppInfoDetailView: View {
                         downloadStatus: info.downloadStatus
                     )
                     .padding()
-                    
+
                     AppInfoDetailMiddleView(
                         averageUserRating: info.averageUserRating,
                         averageUserRatingText: info.averageUserRatingText,
@@ -64,38 +78,38 @@ struct AppInfoDetailView: View {
                         developerName: info.developerName
                     )
                     .padding(.bottom, 11)
-                    
+
                     AppInfoNewUpdatesView(
                         appVersion: info.appVersion,
                         releaseDate: info.releaseDateText,
                         releaseNote: info.releaseNotes
                     )
                     .padding(.bottom, 34)
-                    
+
                     AppScreenShotView(imageUrls: info.screenshots) { action in
                         guard case let .tapScreenShot(index) = action else { return }
                         intent.requestFullScreenshot(.init(index: index))
                     }
                     .padding(.bottom, 20)
-                    
+
                     AppIntroductView(description: info.appDescription, developerName: info.developerName) { action in
                         guard case .tapDeveloperButton = action else { return }
                         intent.requestTapDeveloperButton(.init())
                     }
                     .padding(.bottom, 25)
-                    
+
                     RatingAndReviewView(
                         averageUserRating: info.averageUserRating,
                         averageUserRatingText: info.averageUserRatingText,
                         userRatingCountText: info.userRatingCountText
                     )
                     .padding(.bottom, 38)
-                    
+
                     PrivacyInfoView(developerName: info.developerName)
-                    
-                    Spacer()
+                        .padding(.bottom, 50)
                 }
             }
+            .coordinateSpace(name: "scroll")
             .fullScreenCover(isPresented: bindingState(key: \.showFullScreenshot, setter: intent.setShowFullScreenshot)) {
                 FullScreenshotView(
                     isPresented: bindingState(key: \.showFullScreenshot, setter: intent.setShowFullScreenshot),
@@ -103,13 +117,24 @@ struct AppInfoDetailView: View {
                     initIndex: state.fullScreenInitIndex
                 )
             }
-            
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    KFImage(state.infoViewModel?.appIcon)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(height: 32)
+                        .clipShape(RoundedRectangle(cornerRadius: 6))
+                        .opacity(scrollPosition > 200 ? 1 : Double(scrollPosition) / 200.0)
+                }
+            }
+
         } else {
             ProgressView()
         }
-        
+
     }
-    
+
     private func TopInfoView(iconUrl: URL?, appName: String, appSubTitle: String, downloadStatus: DownloadStatus) -> some View {
         HStack(spacing: 16) {
             KFImage(iconUrl)
@@ -121,18 +146,18 @@ struct AppInfoDetailView: View {
                     RoundedRectangle(cornerRadius: 20)
                         .stroke(Color.subGray, lineWidth: 0.4)
                 )
-            
+
             VStack(alignment: .leading, spacing: 0) {
                 Text(appName)
                     .font(19)
                     .padding(.bottom, 8)
-                
+
                 Text(appSubTitle)
                     .font(12)
                     .foregroundStyle(Color.subGray)
-                
+
                 Spacer()
-                
+
                 HStack(alignment: .bottom) {
                     switch downloadStatus {
                         case .notInstalled:
@@ -141,7 +166,7 @@ struct AppInfoDetailView: View {
                                     RoundedRectangle(cornerRadius: 16)
                                         .frame(width: 75, height: 32)
                                         .foregroundStyle(Color.blue)
-                                    
+
                                     Text("설치")
                                         .foregroundStyle(Color.white)
                                         .font(13, .bold)
@@ -157,16 +182,16 @@ struct AppInfoDetailView: View {
                                     RoundedRectangle(cornerRadius: 16)
                                         .frame(width: 75, height: 32)
                                         .foregroundStyle(Color.blue)
-                                    
+
                                     Text("열기")
                                         .foregroundStyle(Color.white)
                                         .font(13, .bold)
                                 }
                             }
                     }
-                    
+
                     Spacer()
-                    
+
                     if let appStoreURL = state.infoViewModel?.appStoreURL {
                         ShareLink(item: appStoreURL, label: {
                             Image(systemName: "square.and.arrow.up")
@@ -180,11 +205,19 @@ struct AppInfoDetailView: View {
             }
         }
     }
-    
+
     private func bindingState<T>(key: KeyPath<AppInfoDetailStateProtocol, T>, setter: @escaping (T) -> Void) -> Binding<T> {
         Binding(get: {
             state[keyPath: key]
         }, set: setter)
+    }
+}
+
+// MARK: - ScrollOffset Preference Key
+struct ScrollOffsetPreferenceKey: PreferenceKey {
+    static var defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = nextValue()
     }
 }
 
@@ -193,7 +226,7 @@ struct AppInfoDetailView: View {
     let entity = try? JSONDecoder().decode(AppStoreSearchEntity.self, from: rawData)
     let domain = entity?.toDomain()
     guard let appInfo = domain?.results.first else { return Text("Fail") }
-    
+
     return NavigationStack {
         AppInfoDetailView(appInfo: appInfo)
     }
