@@ -11,10 +11,16 @@ struct MainTabView: View {
     @State private var selected = MainTabModel.Tabs.search
     var body: some View {
         TabView(selection: $selected) {
-            ForEach(MainTabModel.Tabs.allCases) { tabInfo in
-                Tab(tabInfo.rawValue, systemImage: tabInfo.tabImageName, value: tabInfo, content: {
-                    tabInfo.tabView
-                })
+            ForEach(MainTabModel.Tabs.allCases, id: \.self) { tabInfo in
+                if tabInfo == .search {
+                    Tab(tabInfo.rawValue, systemImage: tabInfo.tabImageName, value: tabInfo, role: .search) {
+                        tabInfo.tabView
+                    }
+                } else {
+                    Tab(tabInfo.rawValue, systemImage: tabInfo.tabImageName, value: tabInfo) {
+                        tabInfo.tabView
+                    }
+                }
             }
         }
     }
